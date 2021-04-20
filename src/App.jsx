@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   interval,
   Subject,
-  fromEvent,
 } from 'rxjs';
 import {
   takeUntil,
