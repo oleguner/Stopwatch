@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+
 import {
-  interval,
-  Subject,
+  interval, Subject, fromEvent,
 } from 'rxjs';
+
 import {
-  takeUntil,
+  takeUntil, map, buffer, debounceTime, filter,
 } from 'rxjs/operators';
 
 import './App.css';
@@ -14,14 +15,8 @@ function App() {
   const [isTimerOn, setTimerOn] = useState(false);
   const [startStopBtn, setStartStopBtn] = useState();
 
-  const handleClick = () => {
+  const handleStartStop = () => {
     setTimerOn(!isTimerOn);
-  };
-
-  const handleWait = () => {
-    if (time !== 0) {
-      setTimerOn(false);
-    }
   };
 
   const handleReset = () => {
@@ -51,6 +46,27 @@ function App() {
     };
   }, [isTimerOn]);
 
+  /* ======================= DOUBLE CLICK ========================= */
+
+  useEffect(() => {
+    const clicks$ = fromEvent(document.getElementById('wait'), 'click');
+    const buff$ = clicks$.pipe(
+      debounceTime(299),
+    );
+
+    clicks$.pipe(
+      buffer(buff$),
+      map((list) => list.length),
+      filter((x) => x === 2),
+    ).subscribe(() => {
+      setTimerOn(false);
+    });
+
+    return () => clicks$.unsubscribe();
+  }, []);
+
+  /* ================================================================ */
+
   return (
     <section className="App">
       <div className="timer">
@@ -58,7 +74,7 @@ function App() {
           <div className="display-wrapper">
 
             <div className="timer__display">
-              {(time / 6000) < 10
+              {Math.trunc(time / 6000) < 10
                 && <span>0</span>}
               {Math.trunc(time / 6000)}
             </div>
@@ -69,7 +85,7 @@ function App() {
 
             <div className="timer__display">
 
-              {(time / 100) < 10
+              {Math.trunc(time / 100) % 60 < 10
                 && <span>0</span>}
               {Math.trunc(time / 100) % 60}
             </div>
@@ -89,7 +105,7 @@ function App() {
             <button
               className={isTimerOn ? 'stop' : ''}
               type="button"
-              onClick={handleClick}
+              onClick={handleStartStop}
               id="start-stop"
             >
               {startStopBtn}
@@ -97,7 +113,6 @@ function App() {
             <button
               className="wait"
               type="button"
-              onClick={handleWait}
               id="wait"
             >
               Wait

@@ -62,12 +62,15 @@ button:active {
 
 .stop {
   background-color: rgb(255, 40, 0);
+  box-shadow: 2px 2px 2px rgba(195, 11, 11, 0.5);
 }
 
 .wait {
   background-color: rgb(233, 255, 87);
+  box-shadow: 2px 2px 2px rgba(177, 195, 11, 0.5);
 }
 
 .reset {
   background-color: rgb(196, 202, 206);
+  box-shadow: 2px 2px 2px rgba(0, 15, 3, 0.5);
 }
