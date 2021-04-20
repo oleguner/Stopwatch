@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { interval, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {
+  interval,
+  Subject,
+  fromEvent,
+} from 'rxjs';
+import {
+  takeUntil,
+} from 'rxjs/operators';
 
 import './App.css';
 
@@ -15,7 +21,7 @@ function App() {
 
   const handleWait = () => {
     if (time !== 0) {
-      setStartStopBtn(false);
+      setTimerOn(false);
     }
   };
 
@@ -25,16 +31,15 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(isTimerOn);
     if (isTimerOn) {
       setStartStopBtn('Stop');
     } else {
       setStartStopBtn('Start');
     }
 
-    const unsubscribe$ = new Subject();
+    const timeSubject$ = new Subject();
     interval(10)
-      .pipe(takeUntil(unsubscribe$))
+      .pipe(takeUntil(timeSubject$))
       .subscribe(() => {
         if (isTimerOn) {
           setTime((val) => val + 1);
@@ -42,8 +47,8 @@ function App() {
       });
 
     return () => {
-      unsubscribe$.next();
-      unsubscribe$.complete();
+      timeSubject$.next();
+      timeSubject$.complete();
     };
   }, [isTimerOn]);
 
@@ -65,7 +70,13 @@ function App() {
           >
             {startStopBtn}
           </button>
-          <button type="button" onClick={handleWait}>Wait</button>
+          <button
+            type="button"
+            onClick={handleWait}
+            id="wait"
+          >
+            Wait
+          </button>
           <button type="button" onClick={handleReset}>Reset</button>
         </div>
       </div>
