@@ -2,13 +2,13 @@
   text-align: center;
 }
 
-.App-header {
-  background-color: #0f1929;
-  min-height: 100vh;
+.timer {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  background-color: #0f1929;
+  min-height: 100vh;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -18,10 +18,24 @@
 }
 
 .timer__wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.33),
+  2px 2px 2px rgb(0, 0, 0, 0.33);
+  border-radius: 8px;
   background-color: aliceblue;
   color: #0f1929;
   width: 400px;
   height: 200px;
+}
+
+.timer__display {
+  display: inline-block;
+  margin: 5px;
+  font-size: 24px;
 }
 
 button {
@@ -31,4 +45,29 @@ button {
   cursor: pointer;
   margin: 8px;
   padding: 8px;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #39ff14;
+  box-shadow: 2px 2px 2px rgba(6, 119, 24, 0.5);
+}
+
+button:focus {
+  outline: none;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.stop {
+  background-color: rgb(255, 40, 0);
+}
+
+.wait {
+  background-color: rgb(233, 255, 87);
+}
+
+.reset {
+  background-color: rgb(196, 202, 206);
 }
