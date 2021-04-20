@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { interval, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {
+  interval,
+  Subject,
+} from 'rxjs';
+import {
+  takeUntil,
+} from 'rxjs/operators';
 
 import './App.css';
 
@@ -15,7 +20,7 @@ function App() {
 
   const handleWait = () => {
     if (time !== 0) {
-      setStartStopBtn(false);
+      setTimerOn(false);
     }
   };
 
@@ -25,16 +30,15 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(isTimerOn);
     if (isTimerOn) {
       setStartStopBtn('Stop');
     } else {
       setStartStopBtn('Start');
     }
 
-    const unsubscribe$ = new Subject();
+    const timeSubject$ = new Subject();
     interval(10)
-      .pipe(takeUntil(unsubscribe$))
+      .pipe(takeUntil(timeSubject$))
       .subscribe(() => {
         if (isTimerOn) {
           setTime((val) => val + 1);
@@ -42,31 +46,71 @@ function App() {
       });
 
     return () => {
-      unsubscribe$.next();
-      unsubscribe$.complete();
+      timeSubject$.next();
+      timeSubject$.complete();
     };
   }, [isTimerOn]);
 
   return (
     <section className="App">
-      <div className="App-header">
+      <div className="timer">
         <div className="timer__wrapper">
-          <div>
-            {Math.trunc(time / 6000)}
-            :
-            {Math.trunc(time / 100) % 60}
-            :
-            {time % 100}
+          <div className="display-wrapper">
+
+            <div className="timer__display">
+              {(time / 6000) < 10
+                && <span>0</span>}
+              {Math.trunc(time / 6000)}
+            </div>
+
+            <div className="timer__display">
+              :
+            </div>
+
+            <div className="timer__display">
+
+              {(time / 100) < 10
+                && <span>0</span>}
+              {Math.trunc(time / 100) % 60}
+            </div>
+
+            <div className="timer__display">
+              :
+            </div>
+
+            <div className="timer__display">
+              {(time % 100) < 10
+                && <span>0</span>}
+              {time % 100}
+            </div>
+
           </div>
-          <button
-            type="button"
-            onClick={handleClick}
-            id="start-stop"
-          >
-            {startStopBtn}
-          </button>
-          <button type="button" onClick={handleWait}>Wait</button>
-          <button type="button" onClick={handleReset}>Reset</button>
+          <div className="button-wrapper">
+            <button
+              className={isTimerOn ? 'stop' : ''}
+              type="button"
+              onClick={handleClick}
+              id="start-stop"
+            >
+              {startStopBtn}
+            </button>
+            <button
+              className="wait"
+              type="button"
+              onClick={handleWait}
+              id="wait"
+            >
+              Wait
+            </button>
+            <button
+              className="reset"
+              type="button"
+              onClick={handleReset}
+            >
+              Reset
+            </button>
+          </div>
+
         </div>
       </div>
     </section>
