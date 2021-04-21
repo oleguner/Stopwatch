@@ -13,7 +13,7 @@ import './App.css';
 function App() {
   const [time, setTime] = useState(0);
   const [isTimerOn, setTimerOn] = useState(false);
-  const [startStopBtn, setStartStopBtn] = useState();
+  const [startStopButtonText, setStartStopButtonText] = useState('');
 
   const handleStartStop = () => {
     setTimerOn(!isTimerOn);
@@ -26,9 +26,9 @@ function App() {
 
   useEffect(() => {
     if (isTimerOn) {
-      setStartStopBtn('Stop');
+      setStartStopButtonText('Stop');
     } else {
-      setStartStopBtn('Start');
+      setStartStopButtonText('Start');
     }
 
     const timeSubject$ = new Subject();
@@ -50,17 +50,21 @@ function App() {
 
   useEffect(() => {
     const clicks$ = fromEvent(document.getElementById('wait'), 'click');
-    const buff$ = clicks$.pipe(
-      debounceTime(299),
-    );
+    const buff$ = clicks$.pipe(debounceTime(299));
 
     clicks$.pipe(
       buffer(buff$),
       map((list) => list.length),
-      filter((x) => x === 2),
-    ).subscribe(() => {
-      setTimerOn(false);
-    });
+      filter((length) => {
+        if (length < 2) {
+          console.log('it counts as 1 click');
+        } else {
+          console.log('that`s good');
+        }
+
+        return length === 2;
+      }),
+    ).subscribe(() => setTimerOn(false));
 
     return () => clicks$.unsubscribe();
   }, []);
@@ -99,8 +103,8 @@ function App() {
                 && <span>0</span>}
               {time % 100}
             </div>
-
           </div>
+
           <div className="button-wrapper">
             <button
               className={isTimerOn ? 'stop' : ''}
@@ -108,7 +112,7 @@ function App() {
               onClick={handleStartStop}
               id="start-stop"
             >
-              {startStopBtn}
+              {startStopButtonText}
             </button>
             <button
               className="wait"
