@@ -1,1 +1,1 @@
-[DEMO WATCH](https://oleguner.github.io/Stopwatch/public/index.html)
+[DEMO WATCH](https://oleguner.github.io/Stopwatch/)
